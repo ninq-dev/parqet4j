@@ -1,0 +1,98 @@
+{
+  "performance": {
+    "kpis": { "inInterval": { "xirr": 0.1234, "ttwror": 0.0987 } },
+    "fees": { "inInterval": { "fees": 12.5 } },
+    "taxes": { "inInterval": { "taxes": 42.75 } },
+    "unrealizedGains": {
+      "inInterval": { "gainGross": 1500.0, "gainNet": 1450.25, "returnGross": 0.15, "returnNet": 0.1425 }
+    },
+    "realizedGains": {
+      "inInterval": { "gainGross": 320.0, "gainNet": 264.75, "returnGross": 0.08, "returnNet": 0.066 }
+    },
+    "dividends": {
+      "inInterval": { "gainGross": 88.0, "gainNet": 66.5, "taxes": 20.0, "fees": 1.5 }
+    },
+    "valuation": { "atIntervalStart": 10000.0, "atIntervalEnd": 11820.25 }
+  },
+  "holdings": [
+    {
+      "id": "h1",
+      "activityCount": 7,
+      "logo": "https://img.parqet.com/logo/apple.png",
+      "nickname": null,
+      "asset": { "type": "security", "isin": "US0378331005", "name": "Apple Inc." },
+      "externalId": "sync-apple",
+      "subAccount": "p1::s1",
+      "currency": "EUR",
+      "startQuote": {
+        "currency": "EUR",
+        "exchange": "XETRA",
+        "datetime": "2026-01-01T00:00:00Z",
+        "price": 200.0,
+        "fx": { "rate": 1.08, "originalCurrency": "USD" }
+      },
+      "quote": {
+        "currency": "EUR",
+        "exchange": "XETRA",
+        "datetime": "2026-08-17T00:00:00Z",
+        "price": 234.2,
+        "fx": null
+      },
+      "earliestActivityDate": "2024-03-11",
+      "performance": {
+        "kpis": { "inInterval": { "xirr": 0.2, "ttwror": null } },
+        "fees": { "inInterval": { "fees": 2.0 } },
+        "taxes": { "inInterval": { "taxes": 0.0 } },
+        "unrealizedGains": {
+          "inInterval": { "gainGross": 342.0, "gainNet": 340.0, "returnGross": 0.171, "returnNet": 0.17 }
+        },
+        "realizedGains": {
+          "inInterval": { "gainGross": 0.0, "gainNet": 0.0, "returnGross": 0.0, "returnNet": 0.0 }
+        },
+        "dividends": null,
+        "valuation": { "atIntervalStart": 2000.0, "atIntervalEnd": 2342.0 }
+      },
+      "position": {
+        "shares": 10,
+        "purchasePrice": 180.0,
+        "purchaseValue": 1800.0,
+        "currentPrice": 234.2,
+        "currentValue": 2342.0,
+        "isSold": false
+      }
+    }
+  ],
+  "interval": { "start": "2026-01-01", "end": "2026-08-17" },
+  "netAllocations": {
+    "net": 11820.25,
+    "base": 11820.25,
+    "positive": { "total": 11820.25, "shareOfBase": 1.0, "holdings": { "h1": 2342.0 } },
+    "negative": { "total": 0.0, "shareOfBase": 0.0, "holdings": {} }
+  },
+  "charts": [
+    {
+      "mark": "bod",
+      "date": "2026-01-01T00:00:00Z",
+      "values": {
+        "history": 10000.0,
+        "capitalHistory": 9500.0,
+        "perfHistory": 0.0,
+        "perfHistoryUnrealized": 0.0,
+        "ttwror": 0.0,
+        "drawdown": 0.0
+      }
+    },
+    {
+      "mark": "most_recent",
+      "date": "2026-08-17T00:00:00Z",
+      "values": {
+        "history": 11820.25,
+        "capitalHistory": 9500.0,
+        "perfHistory": 0.1234,
+        "perfHistoryUnrealized": 0.1102,
+        "ttwror": 0.0987,
+        "drawdown": -0.0213
+      }
+    }
+  ]
+}

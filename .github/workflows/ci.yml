@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    # Temurin 25 is the reference build — the baseline the POM targets
+    # (maven.compiler.release=25). The other two guard different risks:
+    #
+    #   GraalVM CE 25 — a different javac and JIT vendor, so it is what would
+    #                   catch a compiler warning or javadoc message that only
+    #                   one vendor emits. `-Werror` and `doclint=all` turn any
+    #                   such difference into a failed build.
+    #   Temurin 26    — the next JDK, as an early warning that a language or
+    #                   library change upstream has broken us. Still compiles
+    #                   to release 25; this is a forward-compatibility check.
+    #
+    # Combinations are listed explicitly rather than as a full product, because
+    # GraalVM has no JDK 26 release — it currently tracks JDK 25 and earlier.
+    name: Build & test (${{ matrix.distribution }} ${{ matrix.java }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distribution: temurin
+            java: '25'
+          - distribution: graalvm-community
+            java: '25'
+          - distribution: temurin
+            java: '26'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ matrix.java }} (${{ matrix.distribution }})
+        uses: actions/setup-java@v4
+        with:
+          distribution: ${{ matrix.distribution }}
+          java-version: ${{ matrix.java }}
+          cache: maven
+
+      # `verify` runs all gates: Spotless format check, -Werror compile, unit
+      # tests (Surefire), integration tests against the in-process stub server
+      # (Failsafe), and javadoc lint. The `live` tests need a real access token
+      # and stay excluded.
+      - name: Build and verify
+        run: mvn -B -ntp verify
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-${{ matrix.distribution }}-${{ matrix.java }}
+          path: |
+            target/surefire-reports/
+            target/failsafe-reports/
+
+  markdown:
+    name: Markdown lint (rumdl)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Lint markdown
+        run: uvx rumdl@0.2.10 check .

@@ -1,0 +1,51 @@
+name: Release
+
+# Publishes signed artifacts to the Sonatype Central portal (T-501). Triggered by
+# pushing a `v*` tag (e.g. `v0.1.0`), or manually via the Actions tab. The POM
+# `release` profile attaches + GPG-signs the sources and javadoc JARs alongside
+# the main JAR and uploads the bundle under the `dev.ninq` namespace.
+#
+# Required repository secrets:
+#   MAVEN_CENTRAL_USERNAME / MAVEN_CENTRAL_PASSWORD — Central portal user token
+#   MAVEN_GPG_PRIVATE_KEY                           — ASCII-armored private key
+#   MAVEN_GPG_PASSPHRASE                            — passphrase for that key
+#
+# `autoPublish=false` in the POM means this stages the deployment; finish the
+# release by publishing it from https://central.sonatype.com (or flip autoPublish
+# to true once the pipeline is trusted).
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish to Maven Central
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+          server-id: central
+          server-username: MAVEN_CENTRAL_USERNAME
+          server-password: MAVEN_CENTRAL_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      # `deploy` runs the full lifecycle first (Spotless, -Werror compile, tests,
+      # javadoc lint), then signs and uploads.
+      - name: Publish
+        run: mvn -B -ntp -Prelease deploy
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}

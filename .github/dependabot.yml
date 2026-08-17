@@ -1,0 +1,39 @@
+# Dependency updates. The runtime dependency budget is two (NFR-2), so Jackson and
+# slf4j get their own PRs — a bump there is user-visible and belongs in CHANGELOG.md.
+# Test libraries and build plugins are grouped, because those bumps are noise for
+# consumers and are best reviewed in one pass.
+#
+# `commit-message.prefix` keeps Dependabot's commits inside Conventional Commits,
+# which CONTRIBUTING.md requires of everything on main.
+
+version: 2
+
+updates:
+  - package-ecosystem: maven
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: build
+    groups:
+      test-dependencies:
+        patterns:
+          - org.junit*:*
+          - org.assertj:*
+      build-plugins:
+        patterns:
+          - "*:maven-*-plugin"
+          - "*:*-maven-plugin"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: ci
+    groups:
+      github-actions:
+        patterns:
+          - "*"

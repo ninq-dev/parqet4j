@@ -11,18 +11,12 @@ permissions:
 jobs:
   build:
     # Temurin 25 is the reference build — the baseline the POM targets
-    # (maven.compiler.release=25). The other two guard different risks:
+    # (maven.compiler.release=25). Temurin 26 is the next JDK, an early warning
+    # that a language or library change upstream has broken us; it still
+    # compiles to release 25, so this is a forward-compatibility check.
     #
-    #   GraalVM CE 25 — a different javac and JIT vendor, so it is what would
-    #                   catch a compiler warning or javadoc message that only
-    #                   one vendor emits. `-Werror` and `doclint=all` turn any
-    #                   such difference into a failed build.
-    #   Temurin 26    — the next JDK, as an early warning that a language or
-    #                   library change upstream has broken us. Still compiles
-    #                   to release 25; this is a forward-compatibility check.
-    #
-    # Combinations are listed explicitly rather than as a full product, because
-    # GraalVM has no JDK 26 release — it currently tracks JDK 25 and earlier.
+    # GraalVM CE is the third vendor and lives in its own job below, because it
+    # needs a different setup action than actions/setup-java.
     name: Build & test (${{ matrix.distribution }} ${{ matrix.java }})
     runs-on: ubuntu-latest
     strategy:
@@ -30,8 +24,6 @@ jobs:
       matrix:
         include:
           - distribution: temurin
-            java: '25'
-          - distribution: graalvm-community
             java: '25'
           - distribution: temurin
             java: '26'
@@ -57,6 +49,41 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-reports-${{ matrix.distribution }}-${{ matrix.java }}
+          path: |
+            target/surefire-reports/
+            target/failsafe-reports/
+
+  graalvm:
+    # A different javac and JIT vendor, so this is what catches a compiler
+    # warning or javadoc message that only one vendor emits — `-Werror` and
+    # `doclint=all` turn any such difference into a failed build.
+    #
+    # Separate from the matrix above because GraalVM CE is not one of
+    # actions/setup-java's distributions; `graalvm-community` comes from the
+    # GraalVM project's own action. It also pins the JDK to 25: GraalVM has no
+    # JDK 26 release, it currently tracks JDK 25 and earlier.
+    name: Build & test (graalvm-community 25)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up GraalVM CE 25
+        uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: graalvm-community
+          java-version: '25'
+          cache: maven
+          # setup-graalvm resolves CE builds through the GitHub API.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and verify
+        run: mvn -B -ntp verify
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-graalvm-community-25
           path: |
             target/surefire-reports/
             target/failsafe-reports/

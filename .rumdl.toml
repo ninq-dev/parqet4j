@@ -1,0 +1,13 @@
+# Markdown lint configuration, shared by `rumdl check` locally and in CI.
+#
+# Checked in deliberately: without it rumdl falls back to its defaults (MD013 at
+# 80 columns) or to whatever the contributor has in their user config, and the
+# lint result stops being reproducible.
+
+[MD013]
+# Prose wraps at 100 columns, matching how the docs are written.
+line-length = 100
+# Tables, code samples and the ASCII flow diagrams cannot be rewrapped without
+# breaking them, so they are exempt from the limit.
+tables = false
+code-blocks = false

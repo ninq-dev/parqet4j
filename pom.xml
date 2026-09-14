@@ -66,7 +66,7 @@
         <!-- Runtime dependencies (NFR-2: exactly these two). HTTP comes from the
              JDK (java.net.http), so nothing else is needed at runtime. -->
         <jackson.version>2.22.1</jackson.version>
-        <slf4j.version>2.0.18</slf4j.version>
+        <slf4j.version>2.0.19</slf4j.version>
 
         <!-- Test dependencies -->
         <junit.version>6.1.3</junit.version>

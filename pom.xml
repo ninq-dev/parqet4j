@@ -77,17 +77,17 @@
         <failsafe.excludedGroups>live</failsafe.excludedGroups>
 
         <!-- Plugins -->
-        <compiler.plugin.version>3.15.0</compiler.plugin.version>
-        <surefire.plugin.version>3.5.6</surefire.plugin.version>
-        <failsafe.plugin.version>3.5.6</failsafe.plugin.version>
+        <compiler.plugin.version>3.16.0</compiler.plugin.version>
+        <surefire.plugin.version>3.6.0</surefire.plugin.version>
+        <failsafe.plugin.version>3.6.0</failsafe.plugin.version>
         <javadoc.plugin.version>3.12.0</javadoc.plugin.version>
         <enforcer.plugin.version>3.6.3</enforcer.plugin.version>
-        <spotless.plugin.version>3.9.0</spotless.plugin.version>
+        <spotless.plugin.version>3.10.4</spotless.plugin.version>
 
         <!-- Release/publishing plugins, used only by the `release` profile. -->
         <source.plugin.version>3.4.0</source.plugin.version>
         <gpg.plugin.version>3.2.8</gpg.plugin.version>
-        <central.publishing.plugin.version>0.11.0</central.publishing.plugin.version>
+        <central.publishing.plugin.version>0.12.0</central.publishing.plugin.version>
     </properties>
 
     <dependencyManagement>
